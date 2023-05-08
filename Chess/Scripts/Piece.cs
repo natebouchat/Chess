@@ -16,9 +16,12 @@ public partial class Piece : Node2D
 		anim = GetNode<AnimatedSprite2D>("Sprites");
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+
+	}
+	
+	public void InitializePiece() {
 		anim.Frame = frame;
 		
 		//Each board square has a side length of 98 pixels currently, and the border is 9 pixels.
@@ -27,7 +30,8 @@ public partial class Piece : Node2D
 		int xPos = (xCoord * 98) - 397;
 		int yPos = (yCoord * 98) - 400;
 		this.Position = new Vector2(xPos, yPos);
-		
-		
 	}
+
+
+
 }

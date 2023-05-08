@@ -5,7 +5,7 @@ public partial class CheckBoard : Sprite2D
 {
 	private PackedScene Piece;
 	public string fenPosition{get;set;}
-	Piece[,] board;
+	public Piece[,] board;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -43,7 +43,7 @@ public partial class CheckBoard : Sprite2D
 			while(data.Length > 0 && data[0] != '/'){
 				if(char.IsLetter(data[0]) && j < 8){
 					//GD.Print(data[0] + ", " + i + ", " + j);
-					board[i, j] = GeneratePiece(data[0], i, j);
+					board[i, j] = GeneratePiece(data[0], j, i);
 				}else if(char.IsDigit(data[0])){
 					//GD.Print(data[0] + ", " + i + ", " + j);
 					string temp = data.Substring(0, 1);
@@ -107,7 +107,10 @@ public partial class CheckBoard : Sprite2D
 
 		myPiece.xCoord = xCoord;
 		myPiece.yCoord = yCoord;
-		
+
+		AddChild(myPiece);
+		myPiece.InitializePiece();
+
 		return myPiece;
 	}
 	
