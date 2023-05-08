@@ -99,5 +99,7 @@ animations = [{
 script = ExtResource("1_r8yb1")
 
 [node name="Sprites" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
 sprite_frames = SubResource("SpriteFrames_milvc")
 speed_scale = 0.0
+centered = false
