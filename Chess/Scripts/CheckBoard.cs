@@ -54,6 +54,11 @@ public partial class CheckBoard : Sprite2D
 		GD.Print(CheckMoves(4, 4));
 		MovePiece(4, 4, 3, 0);
 		
+		GD.Print(CheckMoves(4, 0));
+		MovePiece(4, 0, 4, 4);
+		GD.Print(CheckMoves(4, 4));
+		MovePiece(4, 4, 4, 0);
+		
 		/*
 		fenPosition = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
 		GD.Print(fenPosition);
@@ -504,10 +509,64 @@ public partial class CheckBoard : Sprite2D
 		}
 		
 		if(board[y, x].name == "king"){
-			//FIXME
+			GD.Print(board[y, x].toString());
+			if(x - 1 >= 0 && y - 1 >= 0){
+				if(board[y - 1, x - 1] == null || board[y - 1, x - 1].isWhite != board[y, x].isWhite){
+					vals += (x - 1) + " " + (y - 1) + " ";
+				}
+				if(board[y - 1, x] == null || board[y - 1, x].isWhite != board[y, x].isWhite){
+					vals += x + " " + (y - 1) + " ";
+				}
+			}
+			if(x + 1 < 8 && y - 1 >= 0){
+				if(board[y - 1, x + 1] == null || board[y - 1, x + 1].isWhite != board[y, x].isWhite){
+					vals += (x + 1) + " " + (y - 1) + " ";
+				}
+				if(board[y, x + 1] == null || board[y, x + 1].isWhite != board[y, x].isWhite){
+					vals += (x + 1) + " " + y + " ";
+				}
+			}
+			if(x + 1 >= 0 && y + 1 >= 0){
+				if(board[y + 1, x + 1] == null || board[y + 1, x + 1].isWhite != board[y, x].isWhite){
+					vals += (x + 1) + " " + (y + 1) + " ";
+				}
+				if(board[y + 1, x] == null || board[y + 1, x].isWhite != board[y, x].isWhite){
+					vals += x + " " + (y + 1) + " ";
+				}
+			}
+			if(x - 1 >= 0 && y + 1 >= 0){
+				if(board[y + 1, x - 1] == null || board[y + 1, x - 1].isWhite != board[y, x].isWhite){
+					vals += (x - 1) + " " + (y + 1) + " ";
+				}
+				if(board[y, x - 1] == null || board[y, x - 1].isWhite != board[y, x].isWhite){
+					vals += (x - 1) + " " + y + " ";
+				}
+			}
 		}
 		
+		numMoves = (vals.Length + 1) / 4;
+		int[,] moves = int[numMoves, 2];
+		
+		//FIXME
+		for(int i = 0; i < numMoves; i++){
+			moves[i, 0] = vals[0];
+			moves[i, 1] = vals[2];
+			vals = vals.Substring(4);
+		}
+		
+		
 		return vals;
+	}
+	
+	public bool isCheck(int x1, int y1, int x2, int y2){
+		board[y1, x1].isWhite();
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				if(board[j, i].isWhite != board[y1, x1].isWhite()){
+					
+				}
+			}
+		}
 	}
 	
 	
