@@ -31,6 +31,10 @@ public partial class Piece : Node2D
 		int yPos = (yCoord * 98) - 400;
 		this.Position = new Vector2(xPos, yPos);
 	}
+	
+	public void RemovePiece(){
+		anim.Stop();
+	}
 
 
 

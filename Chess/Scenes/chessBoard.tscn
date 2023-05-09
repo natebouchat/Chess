@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cllcteokln8o6"]
+[gd_scene load_steps=3 format=3 uid="uid://bmbxqwsqyxrf8"]
 
 [ext_resource type="Texture2D" uid="uid://05thegyauc6e" path="res://Assets/CheckBoard.jpg" id="1_qmxx6"]
 [ext_resource type="Script" path="res://Scripts/CheckBoard.cs" id="2_nqgfe"]

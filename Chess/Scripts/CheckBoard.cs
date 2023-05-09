@@ -22,9 +22,22 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		
+		//
+		GD.Print(fenPosition);
 		LoadBoard(fenPosition);
+		GD.Print(CreateFenString() + "\n");
 		
-		CreateFenString();	
+		/*
+		fenPosition = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
+		GD.Print(fenPosition);
+		LoadBoard(fenPosition);
+		GD.Print(CreateFenString() + "\n");
+		
+		fenPosition = "pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/ppppppppP/RNBQKBNR b KQkq - 0 1";
+		GD.Print(fenPosition);
+		LoadBoard(fenPosition);
+		GD.Print(CreateFenString() + "\n");
+		*/
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -32,35 +45,43 @@ public partial class CheckBoard : Sprite2D
 	{
 	}
 	
+	
+	//GD.Print(data[0] + ", " + i + ", " + j);
+	//GD.Print("-" + data + "-");
+	
 	public void LoadBoard(string fenData){
 		string data = fenData.Substring(0, fenData.IndexOf(' '));
-		//GD.Print("-" + data + "-");
 		
 		int i = 0;
 		int j = 0;
+		
 		for(i = 0; i < 8; i++){
 			j = 0;
 			while(data.Length > 0 && data[0] != '/'){
 				if(char.IsLetter(data[0]) && j < 8){
-					//GD.Print(data[0] + ", " + i + ", " + j);
 					board[i, j] = GeneratePiece(data[0], j, i);
 				}else if(char.IsDigit(data[0])){
-					//GD.Print(data[0] + ", " + i + ", " + j);
-					string temp = data.Substring(0, 1);
-					//GD.Print("-" + temp + "-");
-					int value = Int32.Parse(temp);
-					//GD.Print(value);
 					
+					string temp = data.Substring(0, 1);
+					int value = Int32.Parse(temp);
+					
+					for(int z = 0; z < value; z++){
+						if(board[i, j + z] != null){
+							board[i, j + z].RemovePiece();
+							board[i, j + z] = null;
+						}
+					}
 					j += value - 1;
+
 				}
-					data = data.Remove(0, 1);
+				
+				data = data.Remove(0, 1);
+				//GD.Print("-" + data + "-");
 				j++;
 			}
 			if(data.Length > 0){
 				data = data.Remove(0, 1);
-				//GD.Print(data);
 			}
-			//GD.Print("Exited the loop for the " + i + " Time!");
 		}
 	}
 	
@@ -116,16 +137,46 @@ public partial class CheckBoard : Sprite2D
 	
 	
 	public string CreateFenString(){
-		for(int i = 0; i < 8; i++){
-			for(int j = 0; j < 8; j++){
-				if(board[i, j] != null){
-					GD.Print(i + ", " + j + ": " + board[i, j].name);
+		string fenString = "";
+		int emptySpace = 0;
+		for(int y = 0; y < 8; y++){
+			emptySpace = 0;
+			for(int x = 0; x < 8; x++){
+				if(board[y, x] != null){
+					if(emptySpace > 0){
+						fenString += emptySpace.ToString();
+						emptySpace = 0;
+					}
+					//GD.Print(x + ", " + y + ": " + board[y, x].name);
+					if(board[y, x].name == "knight"){
+						if(board[y, x].isWhite == true){
+							fenString += "K";
+						}else{
+							fenString += "k";
+						}
+					}else{
+						if(board[y, x].isWhite == true){
+							fenString += Char.ToUpper(board[y, x].name[0]);
+						}else{
+							fenString += board[y, x].name[0];
+						}
+					}
 				}else{
-					GD.Print(i + ", " + j + ": EMPTY");
+					//GD.Print(x + ", " + y + ": EMPTY");
+					emptySpace += 1;
 				}
+				if(emptySpace > 0 && x == 7){
+					fenString += emptySpace.ToString();
+					emptySpace = 0;
+				}
+				//GD.Print(fenString + "-" + emptySpace);
 			}
+			if(y < 7){
+				fenString += "/";
+			}
+			//GD.Print(fenString + "-" + emptySpace);
 		}
 		
-		return "FIX ME";
+		return fenString;
 	}
 }
