@@ -29,36 +29,33 @@ public partial class CheckBoard : Sprite2D
 		GD.Print(CreateFenString() + "\n");
 		
 
-
-/*
-		GD.Print(CheckMoves(0, 1));
-		GD.Print(CheckMoves(0, 6));
+		GD.Print(CheckMoves(8));
+		GD.Print(CheckMoves(48));
 		
-		GD.Print(CheckMoves(0, 0));
-		MovePiece(0, 0, 4, 4);
-		GD.Print(CheckMoves(4, 4));
-		MovePiece(4, 4, 0, 0);
+		GD.Print(CheckMoves(0));
+		MovePiece(0, 36);
+		GD.Print(CheckMoves(36));
+		MovePiece(36, 0);
 		
-		GD.Print(CheckMoves(1, 0));
-		MovePiece(1, 0, 4, 3);
-		GD.Print(CheckMoves(4, 3));
-		MovePiece(4, 3, 1, 0);
+		GD.Print(CheckMoves(1));
+		MovePiece(1, 35);
+		GD.Print(CheckMoves(35));
+		MovePiece(35, 2);
 		
-		GD.Print(CheckMoves(2, 0));
-		MovePiece(2, 0, 4, 4);
-		GD.Print(CheckMoves(4, 4));
-		MovePiece(4, 4, 2, 0);
+		GD.Print(CheckMoves(2));
+		MovePiece(2, 32);
+		GD.Print(CheckMoves(32));
+		MovePiece(32, 2);
 		
-		GD.Print(CheckMoves(3, 0));
-		MovePiece(3, 0, 4, 4);
-		GD.Print(CheckMoves(4, 4));
-		MovePiece(4, 4, 3, 0);
+		GD.Print(CheckMoves(3));
+		MovePiece(3, 36);
+		GD.Print(CheckMoves(36));
+		MovePiece(36, 3);
 		
-		GD.Print(CheckMoves(4, 0));
-		MovePiece(4, 0, 4, 4);
-		GD.Print(CheckMoves(4, 4));
-		MovePiece(4, 4, 4, 0);
-	*/	
+		GD.Print(CheckMoves(4));
+		MovePiece(4, 36);
+		GD.Print(CheckMoves(36));
+		MovePiece(36, 4);
 		
 	
 		/*
@@ -85,21 +82,25 @@ public partial class CheckBoard : Sprite2D
 		int i = 0;
 		
 		for(i = 0; i < 64; i++){
-			if(char.IsLetter(data[0])){
-					board[i] = GeneratePiece(data[0], i);
+			if(data[0] == '/'){
+				i -= 1;
 			}
-			else if(char.IsDigit(data[0])){	
+			if(char.IsLetter(data[0])){
+				board[i] = GeneratePiece(data[0], i);
+			}
+			else if(char.IsDigit(data[0])){
 				string temp = data.Substring(0, 1);
 				int value = Int32.Parse(temp);
 				
 				for(int z = 0; z < value; z++){
 					if(board[i + z] != null){
-						board[i + z].RemovePiece();
+						RemoveChild(board[i + z]);
 						board[i + z] = null;
 					}
 				}
 				i += value - 1;
 			}
+			data = data.Substring(1);
 		}
 		
 		data = fenData.Substring(fenData.IndexOf(' ') + 1);
@@ -199,6 +200,7 @@ public partial class CheckBoard : Sprite2D
 			board[index1] = null;
 		}else if(board[index1].isWhite != board[index2].isWhite){
 			//Remove the piece at x2 y2
+			RemoveChild(board[index2]);
 			board[index2] = board[index1];
 			board[index2].index = index2;
 			board[index2].InitializePiece();
@@ -241,7 +243,7 @@ public partial class CheckBoard : Sprite2D
 		if(board[index].isWhite){
 			if(index - 8 >= 0 && board[index - 8] == null){
 				vals += (index - 8) + " ";
-				if(index - 18 > 0 && board[index - 16] == null && index % 8 == 6){
+				if(index - 18 > 0 && board[index - 16] == null && ((int)Math.Floor((double)index / 8)) == 6){
 					vals += (index - 16) + " ";
 				}
 			}
@@ -255,7 +257,7 @@ public partial class CheckBoard : Sprite2D
 		else{
 			if(index + 8 < 64 && board[index + 8] == null){
 				vals += (index + 8) + " ";
-				if(index + 16 < 64 && board[index + 8] == null && index % 8 == 1){
+				if(index + 16 < 64 && board[index + 16] == null && ((int)Math.Floor((double)index / 8)) == 1){
 					vals += (index + 16) + " ";
 				}
 			}
@@ -271,6 +273,10 @@ public partial class CheckBoard : Sprite2D
 
 	private string GetRookMoves(int index, string vals) {
 		for(int i = index; i >= 0; i -= 8){
+			if(i != index && (i % 8 == 0 || i % 8 == 7)){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -281,6 +287,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i < 64; i += 8){
+			if(i % 8 == 0 || i % 8 == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -291,6 +301,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i >= 0; i--){
+			if(i % 8 == 0 || i % 8 == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -301,6 +315,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i < 64; i++){
+			if(i % 8 == 0 || i % 8 == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -343,6 +361,10 @@ public partial class CheckBoard : Sprite2D
 
 	private string GetBishopMoves(int index, string vals) {
 		for(int i = index; i < 64; i += 9){
+			if(i % 8 == 0 || i % 8 == 7 || ((int)Math.Floor((double)index / 8)) == 0 || ((int)Math.Floor((double)index / 8)) == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -353,6 +375,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i < 64; i += 7){
+			if(i % 8 == 0 || i % 8 == 7 || ((int)Math.Floor((double)index / 8)) == 0 || ((int)Math.Floor((double)index / 8)) == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -363,6 +389,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i >= 0; i -= 9){
+			if(i % 8 == 0 || i % 8 == 7 || ((int)Math.Floor((double)index / 8)) == 0 || ((int)Math.Floor((double)index / 8)) == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
@@ -373,6 +403,10 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		for(int i = index; i >= 0; i -= 7){
+			if(i % 8 == 0 || i % 8 == 7 || ((int)Math.Floor((double)index / 8)) == 0 || ((int)Math.Floor((double)index / 8)) == 7){
+				vals += i + " ";
+				break;
+			}
 			if(board[i] == null){
 				vals += i + " ";
 			}else if(board[i].isWhite != board[index].isWhite){
