@@ -4,6 +4,7 @@ using System;
 public partial class CheckBoard : Sprite2D
 {
 	private PackedScene Piece;
+	private PackedScene BoardButton;
 	public string fenPosition{get;set;}
 	public Piece[] board;
 	public bool isWhitesTurn{get;set;}
@@ -16,11 +17,14 @@ public partial class CheckBoard : Sprite2D
 	{
 		fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		Piece = ResourceLoader.Load<PackedScene>("res://Scenes/piece.tscn");
+		BoardButton = ResourceLoader.Load<PackedScene>("res://Scenes/BoardButton.tscn");
 		
 		//Sets up the board. empty spaces are nulls
-		board = new Piece[64];
+	board = new Piece[64];
 		for(int i = 0; i < 64; i++){
 			board[i] = null;
+			GenerateBoardButton(i);
+			
 		}
 		
 		//
@@ -140,6 +144,11 @@ public partial class CheckBoard : Sprite2D
 		halfTurn = Int32.Parse(data.Substring(data.IndexOf(' ') + 1));
 	}
 	
+	private void GenerateBoardButton(int boardPos) {
+		BoardButton button = (BoardButton)BoardButton.Instantiate();
+		AddChild(button);
+		button.InitializeBoardButton(boardPos);
+	}
 	
 	//This method is used to create pieces
 	public Piece GeneratePiece(char type, int index){

@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcuojw0n4ujkm"]
+
+[ext_resource type="Script" path="res://Scripts/BoardButton.cs" id="1_y51ie"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yx51x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gl56b"]
+bg_color = Color(1, 0.321569, 0.427451, 0.380392)
+
+[node name="Button" type="Button"]
+offset_right = 98.0
+offset_bottom = 98.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yx51x")
+theme_override_styles/hover = SubResource("StyleBoxFlat_gl56b")
+script = ExtResource("1_y51ie")
