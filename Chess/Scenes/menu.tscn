@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://tqqb713b521n"]
+
+[ext_resource type="Script" path="res://Scenes/menu.gd" id="1_7gdvu"]
+[ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="1_lu26g"]
+[ext_resource type="Texture2D" uid="uid://tgxaoirrshkx" path="res://Assets/MenuTitle.png" id="2_6oiy1"]
+[ext_resource type="Texture2D" uid="uid://b7312ioupke4s" path="res://Assets/ChessClipart.png" id="3_8po2p"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_7gdvu")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(401.5, 400.5)
+scale = Vector2(0.843158, 2.28857)
+texture = ExtResource("1_lu26g")
+
+[node name="MenuText" type="Sprite2D" parent="."]
+position = Vector2(210, 131)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_6oiy1")
+
+[node name="Play" type="Button" parent="."]
+offset_left = 79.0
+offset_top = 179.0
+offset_right = 334.0
+offset_bottom = 217.0
+text = "Play"
+
+[node name="Quit" type="Button" parent="."]
+offset_left = 79.0
+offset_top = 267.0
+offset_right = 334.0
+offset_bottom = 305.0
+text = "Quit"
+
+[node name="Clipart" type="Sprite2D" parent="."]
+position = Vector2(561, 244)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_8po2p")
+
+[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
