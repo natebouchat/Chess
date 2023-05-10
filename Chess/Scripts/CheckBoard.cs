@@ -544,29 +544,20 @@ public partial class CheckBoard : Sprite2D
 			}
 		}
 		
-		numMoves = (vals.Length + 1) / 4;
-		int[,] moves = int[numMoves, 2];
-		
-		//FIXME
-		for(int i = 0; i < numMoves; i++){
-			moves[i, 0] = vals[0];
-			moves[i, 1] = vals[2];
-			vals = vals.Substring(4);
-		}
-		
 		
 		return vals;
 	}
 	
 	public bool isCheck(int x1, int y1, int x2, int y2){
-		board[y1, x1].isWhite();
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
-				if(board[j, i].isWhite != board[y1, x1].isWhite()){
+				if(board[j, i].isWhite != board[y1, x1].isWhite){
 					
 				}
 			}
 		}
+		
+		return false;
 	}
 	
 	
