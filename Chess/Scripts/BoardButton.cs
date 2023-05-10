@@ -4,12 +4,14 @@ using System;
 public partial class BoardButton : Button
 {
 	public int boardPos {get; set;}
+	public Piece piece {get; set;}
 	private bool buttonHeld;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		buttonHeld = false;
+		piece = null;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -18,7 +20,12 @@ public partial class BoardButton : Button
 		if(ButtonPressed == true) {
 			if(buttonHeld == false) {
 				buttonHeld = true;
-				GD.Print("Position: " + boardPos);
+				if(piece != null) {
+					GD.Print("Position: " + boardPos + ", Piece: " + piece.name);
+				}
+				else {
+					GD.Print("Position: " + boardPos + ", Piece: NULL");
+				}
 			}
 		}
 		else {

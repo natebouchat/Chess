@@ -6,7 +6,7 @@ public partial class CheckBoard : Sprite2D
 	private PackedScene Piece;
 	private PackedScene BoardButton;
 	public string fenPosition{get;set;}
-	public Piece[] board;
+	public BoardButton[] board;
 	public bool isWhitesTurn{get;set;}
 	public bool[] canCastle = {false, false, false, false};
 	public int turn;
@@ -20,14 +20,11 @@ public partial class CheckBoard : Sprite2D
 		BoardButton = ResourceLoader.Load<PackedScene>("res://Scenes/BoardButton.tscn");
 		
 		//Sets up the board. empty spaces are nulls
-	board = new Piece[64];
+		board = new BoardButton[64];
 		for(int i = 0; i < 64; i++){
-			board[i] = null;
-			GenerateBoardButton(i);
-			
+			board[i] = GenerateBoardButton(i);
 		}
 		
-		//
 		GD.Print(fenPosition);
 		LoadBoard(fenPosition);
 		GD.Print(CreateFenString() + "\n");
@@ -90,16 +87,16 @@ public partial class CheckBoard : Sprite2D
 				i -= 1;
 			}
 			if(char.IsLetter(data[0])){
-				board[i] = GeneratePiece(data[0], i);
+				board[i].piece = GeneratePiece(data[0], i);
 			}
 			else if(char.IsDigit(data[0])){
 				string temp = data.Substring(0, 1);
 				int value = Int32.Parse(temp);
 				
 				for(int z = 0; z < value; z++){
-					if(board[i + z] != null){
-						RemoveChild(board[i + z]);
-						board[i + z] = null;
+					if(board[i + z].piece != null){
+						RemoveChild(board[i + z].piece);
+						board[i + z].piece = null;
 					}
 				}
 				i += value - 1;
@@ -145,10 +142,11 @@ public partial class CheckBoard : Sprite2D
 		halfTurn = Int32.Parse(data.Substring(data.IndexOf(' ') + 1));
 	}
 	
-	private void GenerateBoardButton(int boardPos) {
+	private BoardButton GenerateBoardButton(int boardPos) {
 		BoardButton button = (BoardButton)BoardButton.Instantiate();
 		AddChild(button);
 		button.InitializeBoardButton(boardPos);
+		return button;
 	}
 	
 	//This method is used to create pieces
@@ -202,18 +200,18 @@ public partial class CheckBoard : Sprite2D
 	
 	//moves a piece from one position to another
 	public void MovePiece(int index1, int index2){
-		if(board[index2] == null){
-			board[index2] = board[index1];
-			board[index2].index = index2;
-			board[index2].InitializePiece();
-			board[index1] = null;
-		}else if(board[index1].isWhite != board[index2].isWhite){
+		if(board[index2].piece == null){
+			board[index2].piece = board[index1].piece;
+			board[index2].piece.index = index2;
+			board[index2].piece.InitializePiece();
+			board[index1].piece = null;
+		}else if(board[index1].piece.isWhite != board[index2].piece.isWhite){
 			//Remove the piece at x2 y2
-			RemoveChild(board[index2]);
-			board[index2] = board[index1];
-			board[index2].index = index2;
-			board[index2].InitializePiece();
-			board[index1] = null;
+			RemoveChild(board[index2].piece);
+			board[index2].piece = board[index1].piece;
+			board[index2].piece.index = index2;
+			board[index2].piece.InitializePiece();
+			board[index1].piece = null;
 		}else{
 			GD.Print("Invalid Move!");
 		}
@@ -224,24 +222,24 @@ public partial class CheckBoard : Sprite2D
 	public string CheckMoves(int index){
 		string vals = "";
 
-		GD.Print(board[index].toString());
+		GD.Print(board[index].piece.toString());
 
-		if(board[index].name == "pawn"){
+		if(board[index].piece.name == "pawn"){
 			vals = GetPawnMoves(index, vals);
 		}
-		else if(board[index].name == "rook"){
+		else if(board[index].piece.name == "rook"){
 			vals = GetRookMoves(index, vals);
 		}
-		else if(board[index].name == "knight"){
+		else if(board[index].piece.name == "knight"){
 			vals = GetKnightMoves(index, vals);
 		}
-		else if(board[index].name == "bishop"){
+		else if(board[index].piece.name == "bishop"){
 			vals = GetBishopMoves(index, vals);
 		}
-		else if(board[index].name == "queen"){
+		else if(board[index].piece.name == "queen"){
 			vals = GetQueenMoves(index, vals);
 		}
-		else if(board[index].name == "king"){
+		else if(board[index].piece.name == "king"){
 			vals = GetKingMoves(index, vals);
 		}
 		
@@ -249,31 +247,31 @@ public partial class CheckBoard : Sprite2D
 	}
 
 	private string GetPawnMoves(int index, string vals) {
-		if(board[index].isWhite){
-			if(index - 8 >= 0 && board[index - 8] == null){
+		if(board[index].piece.isWhite){
+			if(index - 8 >= 0 && board[index - 8].piece == null){
 				vals += (index - 8) + " ";
-				if(index - 18 > 0 && board[index - 16] == null && ((int)Math.Floor((double)index / 8)) == 6){
+				if(index - 18 > 0 && board[index - 16].piece == null && ((int)Math.Floor((double)index / 8)) == 6){
 					vals += (index - 16) + " ";
 				}
 			}
-			if(index - 7 >= 0 && board[index - 7] != null && board[index - 7].isWhite != board[index].isWhite){
+			if(index - 7 >= 0 && board[index - 7].piece != null && board[index - 7].piece.isWhite != board[index].piece.isWhite){
 				vals += (index - 7) + " ";
 			}
-			if(index - 9 >= 0 && board[index - 9] != null && board[index - 9].isWhite != board[index].isWhite){
+			if(index - 9 >= 0 && board[index - 9].piece != null && board[index - 9].piece.isWhite != board[index].piece.isWhite){
 				vals += (index - 9) + " ";
 			}
 		}
 		else{
-			if(index + 8 < 64 && board[index + 8] == null){
+			if(index + 8 < 64 && board[index + 8].piece == null){
 				vals += (index + 8) + " ";
-				if(index + 16 < 64 && board[index + 16] == null && ((int)Math.Floor((double)index / 8)) == 1){
+				if(index + 16 < 64 && board[index + 16].piece == null && ((int)Math.Floor((double)index / 8)) == 1){
 					vals += (index + 16) + " ";
 				}
 			}
-			if(index + 9 < 64 && board[index + 9] != null && board[index + 9].isWhite != board[index].isWhite){
+			if(index + 9 < 64 && board[index + 9].piece != null && board[index + 9].piece.isWhite != board[index].piece.isWhite){
 				vals += (index + 9) + " ";
 			}
-			if(index + 7 < 64 && board[index + 7] != null && board[index + 7].isWhite != board[index].isWhite){
+			if(index + 7 < 64 && board[index + 7].piece != null && board[index + 7].piece.isWhite != board[index].piece.isWhite){
 				vals += (index + 7) + " ";
 			}
 		}
@@ -286,12 +284,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -300,12 +298,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -314,12 +312,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -328,12 +326,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -341,28 +339,28 @@ public partial class CheckBoard : Sprite2D
 	}
 
 	private string GetKnightMoves(int index, string vals) {
-		if(index - 17 >= 0 && (board[index - 17] == null || board[index - 17].isWhite != board[index].isWhite)){
+		if(index - 17 >= 0 && (board[index - 17].piece == null || board[index - 17].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 17) + " ";
 		}
-		if(index - 15 >= 0 && (board[index - 15] == null || board[index - 15].isWhite != board[index].isWhite)){
+		if(index - 15 >= 0 && (board[index - 15].piece == null || board[index - 15].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 15) + " ";
 		}
-		if(index - 10 >= 0 && (board[index - 10] == null || board[index - 10].isWhite != board[index].isWhite)){
+		if(index - 10 >= 0 && (board[index - 10].piece == null || board[index - 10].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 10) + " ";
 		}
-		if(index - 6 >= 0 && (board[index - 6] == null || board[index - 6].isWhite != board[index].isWhite)){
+		if(index - 6 >= 0 && (board[index - 6].piece == null || board[index - 6].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 6) + " ";
 		}
-		if(index + 17 < 64 && (board[index + 17] == null || board[index + 17].isWhite != board[index].isWhite)){
+		if(index + 17 < 64 && (board[index + 17].piece == null || board[index + 17].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 17) + " ";
 		}
-		if(index + 15 < 64 && (board[index + 15] == null || board[index + 15].isWhite != board[index].isWhite)){
+		if(index + 15 < 64 && (board[index + 15].piece == null || board[index + 15].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 15) + " ";
 		}
-		if(index + 170< 64 && (board[index + 10] == null || board[index + 10].isWhite != board[index].isWhite)){
+		if(index + 170< 64 && (board[index + 10].piece == null || board[index + 10].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 10) + " ";
 		}
-		if(index + 6 < 64 && (board[index + 6] == null || board[index + 6].isWhite != board[index].isWhite)){
+		if(index + 6 < 64 && (board[index + 6].piece == null || board[index + 6].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 6) + " ";
 		}
 		return vals;
@@ -374,12 +372,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -388,12 +386,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -402,12 +400,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -416,12 +414,12 @@ public partial class CheckBoard : Sprite2D
 				vals += i + " ";
 				break;
 			}
-			if(board[i] == null){
+			if(board[i].piece == null){
 				vals += i + " ";
-			}else if(board[i].isWhite != board[index].isWhite){
+			}else if(board[i].piece.isWhite != board[index].piece.isWhite){
 				vals += i + " ";
 				break;
-			}else if(i != index && board[i].isWhite == board[index].isWhite){
+			}else if(i != index && board[i].piece.isWhite == board[index].piece.isWhite){
 				break;
 			}
 		}
@@ -437,28 +435,28 @@ public partial class CheckBoard : Sprite2D
 	}	
 
 	private string GetKingMoves(int index, string vals) {
-		if(index - 9 >= 0 && (board[index - 9] == null || board[index - 9].isWhite != board[index].isWhite)){
+		if(index - 9 >= 0 && (board[index - 9].piece == null || board[index - 9].piece.isWhite != board[index].piece.isWhite)){
 		vals += (index - 9) + " ";
 		}
-		if(index - 8 >= 0 && (board[index - 8] == null || board[index - 8].isWhite != board[index].isWhite)){
+		if(index - 8 >= 0 && (board[index - 8].piece == null || board[index - 8].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 8) + " ";
 		}
-		if(index - 7 >= 0 && (board[index - 7] == null || board[index - 7].isWhite != board[index].isWhite)){
+		if(index - 7 >= 0 && (board[index - 7].piece == null || board[index - 7].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 7) + " ";
 		}
-		if(index - 1 >= 0 && (board[index - 1] == null || board[index - 1].isWhite != board[index].isWhite)){
+		if(index - 1 >= 0 && (board[index - 1].piece == null || board[index - 1].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index - 1) + " ";
 		}
-		if(index + 1 < 64 && (board[index + 1] == null || board[index + 1].isWhite != board[index].isWhite)){
+		if(index + 1 < 64 && (board[index + 1].piece == null || board[index + 1].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 17) + " ";
 		}
-		if(index + 7 < 64 && (board[index + 7] == null || board[index + 7].isWhite != board[index].isWhite)){
+		if(index + 7 < 64 && (board[index + 7].piece == null || board[index + 7].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 7) + " ";
 		}
-		if(index + 8 < 64 && (board[index + 8] == null || board[index + 8].isWhite != board[index].isWhite)){
+		if(index + 8 < 64 && (board[index + 8].piece == null || board[index + 8].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 8) + " ";
 		}
-		if(index + 9 < 64 && (board[index + 9] == null || board[index + 9].isWhite != board[index].isWhite)){
+		if(index + 9 < 64 && (board[index + 9].piece == null || board[index + 9].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 9) + " ";
 		}
 			return vals;
@@ -467,7 +465,7 @@ public partial class CheckBoard : Sprite2D
 	public bool isCheck(int index1, int index2){
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
-				if(board[index2].isWhite != board[index1].isWhite){
+				if(board[index2].piece.isWhite != board[index1].piece.isWhite){
 					
 				}
 			}
@@ -490,22 +488,22 @@ public partial class CheckBoard : Sprite2D
 				}
 				fenString += "/";
 			}
-			else if(board[i] != null){
+			else if(board[i].piece != null){
 				if(emptySpace > 0){
 					fenString += emptySpace.ToString();
 					emptySpace = 0;
 				}
-				if(board[i].name == "knight"){
-					if(board[i].isWhite == true){
+				if(board[i].piece.name == "knight"){
+					if(board[i].piece.isWhite == true){
 						fenString += "N";
 					}else{
 						fenString += "n";
 					}
 				}else{
-					if(board[i].isWhite == true){
-						fenString += Char.ToUpper(board[i].name[0]);
+					if(board[i].piece.isWhite == true){
+						fenString += Char.ToUpper(board[i].piece.name[0]);
 					}else{
-						fenString += board[i].name[0];
+						fenString += board[i].piece.name[0];
 					}
 				}
 			}
