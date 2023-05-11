@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bmbxqwsqyxrf8"]
+[gd_scene load_steps=4 format=3 uid="uid://bmbxqwsqyxrf8"]
 
+[ext_resource type="Script" path="res://Scripts/InitializeBoard.cs" id="1_bwye2"]
 [ext_resource type="Texture2D" uid="uid://05thegyauc6e" path="res://Assets/CheckBoard.jpg" id="1_qmxx6"]
 [ext_resource type="Script" path="res://Scripts/CheckBoard.cs" id="2_nqgfe"]
 
 [node name="ChessBoard" type="Node2D"]
+script = ExtResource("1_bwye2")
 
 [node name="Board" type="Sprite2D" parent="."]
 position = Vector2(400, 400)
