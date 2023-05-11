@@ -29,17 +29,11 @@ public partial class Piece : Node2D
 		int yPos = (((int)Math.Floor((double)index / 8)) * 98) - 400;
 		
 		this.Position = new Vector2(xPos, yPos);
-
-	}
-	
-	public void RemovePiece(){
-		anim.Stop();
 	}
 
 	public string toString(){
 		string info = "isWhite: " + isWhite + "    " + name + "  " + index; 
 		return info;
 	}
-
 
 }
