@@ -29,33 +29,22 @@ public partial class CheckBoard : Sprite2D
 		LoadBoard(fenPosition);
 		GD.Print(CreateFenString() + "\n");
 		
-		GD.Print(CheckMoves(8));
-		GD.Print(CheckMoves(48));
+		GD.Print("-" + CheckMoves(8) + "-");
+		MovePiece(8);
 		
-		GD.Print(CheckMoves(0));
-		MovePiece(0, 36);
-		GD.Print(CheckMoves(36));
-		MovePiece(36, 0);
+		MovePiece(9);
+		MovePiece(17);
 		
-		GD.Print(CheckMoves(1));
-		MovePiece(1, 35);
-		GD.Print(CheckMoves(35));
-		MovePiece(35, 1);
+		MovePiece(0);
+		MovePiece(8);
 		
-		GD.Print(CheckMoves(2));
-		MovePiece(2, 32);
-		GD.Print(CheckMoves(32));
-		MovePiece(32, 2);
+		MovePiece(1);
 		
-		GD.Print(CheckMoves(3));
-		MovePiece(3, 36);
-		GD.Print(CheckMoves(36));
-		MovePiece(36, 3);
+		MovePiece(2);
 		
-		GD.Print(CheckMoves(4));
-		MovePiece(4, 36);
-		GD.Print(CheckMoves(36));
-		MovePiece(36, 4);
+		MovePiece(3);
+		
+		MovePiece(4);
 		
 	
 		/*
@@ -195,21 +184,43 @@ public partial class CheckBoard : Sprite2D
 	}
 	
 	//Moves a piece from one position to another
-	public void MovePiece(int index1, int index2){
-		if(board[index2].piece == null){
-			board[index2].piece = board[index1].piece;
-			board[index2].piece.index = index2;
-			board[index2].piece.InitializePiece();
-			board[index1].piece = null;
-		}else if(board[index1].piece.isWhite != board[index2].piece.isWhite){
-			//Remove the piece at x2 y2
-			RemoveChild(board[index2].piece);
-			board[index2].piece = board[index1].piece;
-			board[index2].piece.index = index2;
-			board[index2].piece.InitializePiece();
-			board[index1].piece = null;
-		}else{
-			GD.Print("Invalid Move!");
+	public void MovePiece(int index1){
+		string vals = CheckMoves(index1);
+		string[] temp;
+		int[] possibleMoves;
+		//GD.Print(vals);
+		if(vals.Length > 0){
+			temp = vals.Split(' ');
+			possibleMoves = new int[temp.Length];
+			
+			Console.WriteLine("Please pick one of the following Possible Moves: ");
+			for(int i = 0; i < temp.Length; i++){
+				Console.WriteLine(i + ": " + temp[i]);
+				possibleMoves[i] = Int32.Parse(temp[i]);
+			}
+			
+			string userInput = "0";
+			int userChoice = Int32.Parse(userInput);
+			int index2 = possibleMoves[userChoice];
+			
+			GD.Print("Valid Choice Made " + userChoice + " -" + index2 + "-");
+			if(board[index2].piece == null){
+				board[index2].piece = board[index1].piece;
+				board[index2].piece.index = index2;
+				board[index2].piece.InitializePiece();
+				board[index1].piece = null;
+			}else if(board[index1].piece.isWhite != board[index2].piece.isWhite){
+				RemoveChild(board[index2].piece);
+				board[index2].piece = board[index1].piece;
+				board[index2].piece.index = index2;
+				board[index2].piece.InitializePiece();
+				board[index1].piece = null;
+			}else{
+				GD.Print("Invalid Move!");
+			}
+		}
+		else{
+			GD.Print("No Valid Moves!");	
 		}
 	}
 	
@@ -271,6 +282,9 @@ public partial class CheckBoard : Sprite2D
 				vals += (index + 7) + " ";
 			}
 		}
+		if(vals.Length > 0){
+			vals = vals.Substring(0, vals.Length - 1);
+		}
 		return vals;
 	}
 
@@ -317,7 +331,9 @@ public partial class CheckBoard : Sprite2D
 				break;
 			}
 		}
-		
+		if(vals.Length > 0){
+			vals = vals.Substring(0, vals.Length - 1);
+		}
 		return vals;
 	}
 
@@ -345,6 +361,9 @@ public partial class CheckBoard : Sprite2D
 		}
 		if(index + 6 < 64 && (board[index + 6].piece == null || board[index + 6].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 6) + " ";
+		}
+		if(vals.Length > 0){
+			vals = vals.Substring(0, vals.Length - 1);
 		}
 		return vals;
 	}
@@ -402,7 +421,9 @@ public partial class CheckBoard : Sprite2D
 				}
 			}
 		}
-		
+		if(vals.Length > 0){
+			vals = vals.Substring(0, vals.Length - 1);
+		}
 		return vals;
 	}	
 
@@ -438,6 +459,9 @@ public partial class CheckBoard : Sprite2D
 		}
 		if(index + 9 < 64 && (board[index + 9].piece == null || board[index + 9].piece.isWhite != board[index].piece.isWhite)){
 			vals += (index + 9) + " ";
+		}
+		if(vals.Length > 0){
+			vals = vals.Substring(0, vals.Length - 1);
 		}
 			return vals;
 	}
