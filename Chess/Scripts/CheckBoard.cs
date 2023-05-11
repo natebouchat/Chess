@@ -5,8 +5,10 @@ public partial class CheckBoard : Sprite2D
 {
 	private PackedScene Piece;
 	private PackedScene BoardButton;
+	private PackedScene Highlight;
 	public string fenPosition{get;set;}
 	public BoardButton[] board;
+	public Node2D[] highlight;
 	public bool isWhitesTurn{get;set;}
 	public bool[] canCastle = {false, false, false, false};
 	public int turn;
@@ -18,11 +20,16 @@ public partial class CheckBoard : Sprite2D
 		fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		Piece = ResourceLoader.Load<PackedScene>("res://Scenes/piece.tscn");
 		BoardButton = ResourceLoader.Load<PackedScene>("res://Scenes/BoardButton.tscn");
+		Highlight = ResourceLoader.Load<PackedScene>("res://Scenes/PossibleMoveHighlight.tscn");
 		
 		//Sets up the board. empty spaces are nulls
 		board = new BoardButton[64];
+		highlight = new Node2D[64];
 		for(int i = 0; i < 64; i++){
+			GD.Print(i);
 			board[i] = GenerateBoardButton(i);
+			
+			highlight[i] = GenerateHighlight(i);
 		}
 		
 		GD.Print(fenPosition);
@@ -32,6 +39,7 @@ public partial class CheckBoard : Sprite2D
 		GD.Print("-" + CheckMoves(8) + "-");
 		MovePiece(8);
 		
+		/*
 		MovePiece(9);
 		MovePiece(17);
 		
@@ -46,6 +54,7 @@ public partial class CheckBoard : Sprite2D
 		
 		MovePiece(4);
 		
+		*/
 	
 		/*
 		fenPosition = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
@@ -136,6 +145,19 @@ public partial class CheckBoard : Sprite2D
 		return button;
 	}
 	
+	private Node2D GenerateHighlight(int index){
+		Node2D myHighlight = (Node2D)Highlight.Instantiate();
+		AddChild(myHighlight);
+		myHighlight.Visible = false;
+		
+		int xPos = ((index % 8) * 98) + 57;
+		int yPos = (((int)Math.Floor((double)index / 8)) * 98) + 55;
+		
+		myHighlight.Position = new Vector2(xPos, yPos);
+		
+		return myHighlight;
+	}
+	
 	//This method is used to create pieces
 	public Piece GeneratePiece(char type, int index){
 		Piece myPiece = (Piece)Piece.Instantiate();
@@ -197,6 +219,7 @@ public partial class CheckBoard : Sprite2D
 			for(int i = 0; i < temp.Length; i++){
 				Console.WriteLine(i + ": " + temp[i]);
 				possibleMoves[i] = Int32.Parse(temp[i]);
+				highlight[possibleMoves[i]].Visible = true;
 			}
 			
 			string userInput = "0";
@@ -223,7 +246,6 @@ public partial class CheckBoard : Sprite2D
 			GD.Print("No Valid Moves!");	
 		}
 	}
-	
 	
 	//Checks the possible moves of a piece on a given coordinate
 	public string CheckMoves(int index){
