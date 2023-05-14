@@ -8,6 +8,7 @@ public partial class InitializeBoard : Node2D
 	private PackedScene BoardButtonScene;
 	private BoardButton[] boardButtons;
 	private string fenPosition;
+	private int lastClickedPosition = -1;
 
 
 	public override void _Ready()
@@ -88,12 +89,25 @@ public partial class InitializeBoard : Node2D
 	}
 
 	public void ButtonWasClicked(int position) {
+		if(lastClickedPosition >= 0 && checkBoard.highlight[position].Visible == true){
+			GD.Print("From " + lastClickedPosition + " to " + index);
+			checkBoard.MovePiece(lastClickedPosition, position);
+			lastClickedPosition = -1;
+			ClearHighlights();
+		}
+		
 		if(checkBoard.board[position] != null) {
 			GD.Print("Position: " + checkBoard.board[position].index + ", Piece: " + checkBoard.board[position].name);
+			lastClickedPosition = position;
+			ClearHighlights();
+			DisplayHighlights(checkBoard.CheckMoves(position));
 		}
 		else {
 			GD.Print("Position: " + position + ", Piece: NULL");
+			lastClickedPosition = -1;
+			ClearHighlights();
 		}
+		
 	}
 
 	private BoardButton GenerateBoardButton(int boardPos) {
@@ -102,5 +116,31 @@ public partial class InitializeBoard : Node2D
 		button.InitializeBoardButton(boardPos);
 		return button;
 	}
+	
+	public int[] DisplayHighlights(string vals){
+		string[] temp;
+		int[] possibleMoves;
+		if(vals.Length > 0){
+			temp = vals.Split(' ');
+			possibleMoves = new int[temp.Length];
+			for(int i = 0; i < temp.Length; i++){
+				Console.WriteLine(i + ": " + temp[i]);
+				possibleMoves[i] = Int32.Parse(temp[i]);
+				checkBoard.highlight[possibleMoves[i]].Visible = true;
+			}
+			return possibleMoves;
+		}else{
+			GD.Print("No Vals to Highlight Moves (122 of InitializeBoard)");
+			return null;
+		}
+	}
+	
+	public void ClearHighlights(){
+		for(int i = 0; i < 64; i++){
+			checkBoard.highlight[i].Visible = false;
+		}
+	}
+	
+	
 
 }

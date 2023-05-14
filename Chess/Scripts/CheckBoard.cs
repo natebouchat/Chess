@@ -23,7 +23,7 @@ public partial class CheckBoard : Sprite2D
 		highlight = new Node2D[64];
 		for(int i = 0; i < 64; i++){
 			GD.Print(i);
-			board[i] = null;			
+			board[i] = null;
 			highlight[i] = GenerateHighlight(i);
 		}
 		/*
@@ -164,31 +164,54 @@ public partial class CheckBoard : Sprite2D
 		}
 	}
 	
+	public void MovePiece(int index1, int index2){
+		GD.Print("Choices Made: " + index1 + ", " + index2);
+		if(board[index2] == null){
+			board[index2] = board[index1];
+			board[index2].index = index2;
+			board[index2].InitializePiece();
+			board[index1] = null;
+		}else if(board[index1].isWhite != board[index2].isWhite){
+			RemoveChild(board[index2]);
+			board[index2] = board[index1];
+			board[index2].index = index2;
+			board[index2].InitializePiece();
+			board[index1] = null;
+		}else{
+			GD.Print("Invalid Move!");
+		}
+		if(board[index2].name == "pawn" && index2 / 8 >= 7){
+			//FIXME: Allow player to choose which piece they would like to promote to with a small popup menu
+			//For now, it promotes to queen
+			board[index2].name = "queen";
+			board[index2].frame -= 4; 
+			board[index2].InitializePiece();
+		}
+	}
+	
 	//Checks the possible moves of a piece on a given coordinate
 	public string CheckMoves(int index){
 		string vals = "";
 
-		//if(board[index] != null) {
-			GD.Print(board[index].toString());
-			if(board[index].name == "pawn"){
-				vals = GetPawnMoves(index, vals);
-			}
-			else if(board[index].name == "rook"){
-				vals = GetRookMoves(index, vals);
-			}
-			else if(board[index].name == "night"){
-				vals = GetKnightMoves(index, vals);
-			}
-			else if(board[index].name == "bishop"){
-				vals = GetBishopMoves(index, vals);
-			}
-			else if(board[index].name == "queen"){
-				vals = GetQueenMoves(index, vals);
-			}
-			else if(board[index].name == "king"){
-				vals = GetKingMoves(index, vals);
-			}
-		//}
+		GD.Print(board[index].toString());
+		if(board[index].name == "pawn"){
+			vals = GetPawnMoves(index, vals);
+		}
+		else if(board[index].name == "rook"){
+			vals = GetRookMoves(index, vals);
+		}
+		else if(board[index].name == "night"){
+			vals = GetKnightMoves(index, vals);
+		}
+		else if(board[index].name == "bishop"){
+			vals = GetBishopMoves(index, vals);
+		}
+		else if(board[index].name == "queen"){
+			vals = GetQueenMoves(index, vals);
+		}
+		else if(board[index].name == "king"){
+			vals = GetKingMoves(index, vals);
+		}
 		
 		return vals;
 	}
@@ -247,28 +270,32 @@ public partial class CheckBoard : Sprite2D
 			}
 			vals += i + " ";
 		}
-		for(int i = index - 1; i >= 0; i--){
-			if(board[i] != null){
-				if(board[i].isWhite != board[index].isWhite){
-					vals += i + " ";
+		if(index % 8 != 0){
+			for(int i = index - 1; i >= 0; i--){
+				if(board[i] != null){
+					if(board[i].isWhite != board[index].isWhite){
+						vals += i + " ";
+					}
+					break;
 				}
-				break;
-			}
-			vals += i + " ";
-			if(i % 8 == 0){
-				break;
+				vals += i + " ";
+				if(i % 8 == 0){
+					break;
+				}
 			}
 		}
-		for(int i = index + 1; i < 64; i++){
-			if(board[i] != null){
-				if(board[i].isWhite != board[index].isWhite){
-					vals += i + " ";
+		if(index % 8 != 7){
+			for(int i = index + 1; i < 64; i++){
+				if(board[i] != null){
+					if(board[i].isWhite != board[index].isWhite){
+						vals += i + " ";
+					}
+					break;
 				}
-				break;
-			}
-			vals += i + " ";
-			if(i % 8 == 7){
-				break;
+				vals += i + " ";
+				if(i % 8 == 7){
+					break;
+				}
 			}
 		}
 		if(vals.Length > 0){
@@ -370,8 +397,10 @@ public partial class CheckBoard : Sprite2D
 	private string GetQueenMoves(int index, string vals) {
 		string newVals = "";
 		newVals += GetRookMoves(index, vals);
+		if(newVals.Length > 0){
+			newVals += " ";
+		}
 		newVals += GetBishopMoves(index, vals);
-
 		return newVals;
 	}	
 
