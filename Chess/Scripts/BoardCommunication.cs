@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class InitializeBoard : Node2D
+public partial class BoardCommunication : Node2D
 {
 	
 	private CheckBoard checkBoard;
@@ -90,7 +90,7 @@ public partial class InitializeBoard : Node2D
 
 	public void ButtonWasClicked(int position) {
 		if(lastClickedPosition >= 0 && checkBoard.highlight[position].Visible == true){
-			GD.Print("From " + lastClickedPosition + " to " + index);
+			GD.Print("From " + lastClickedPosition + " to " + position);
 			checkBoard.MovePiece(lastClickedPosition, position);
 			lastClickedPosition = -1;
 			ClearHighlights();
@@ -100,7 +100,9 @@ public partial class InitializeBoard : Node2D
 			GD.Print("Position: " + checkBoard.board[position].index + ", Piece: " + checkBoard.board[position].name);
 			lastClickedPosition = position;
 			ClearHighlights();
-			DisplayHighlights(checkBoard.CheckMoves(position));
+			if(checkBoard.board[position].isWhite == true) {
+				DisplayHighlights(checkBoard.CheckMoves(position));
+			}
 		}
 		else {
 			GD.Print("Position: " + position + ", Piece: NULL");

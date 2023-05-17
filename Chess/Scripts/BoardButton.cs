@@ -5,13 +5,13 @@ public partial class BoardButton : Button
 {
 	public int boardPos {get; set;}
 	private bool buttonHeld;
-	private InitializeBoard board;
+	private BoardCommunication board;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		buttonHeld = false;
-		board = GetParent<InitializeBoard>();
+		board = GetParent<BoardCommunication>();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
