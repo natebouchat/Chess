@@ -21,7 +21,7 @@ public partial class CheckBoard : Sprite2D
 		Piece = ResourceLoader.Load<PackedScene>("res://Scenes/piece.tscn");
 		Highlight = ResourceLoader.Load<PackedScene>("res://Scenes/PossibleMoveHighlight.tscn");
 		pieceMovements = GetNode<PieceMovements>("PieceMovements");
-		opponent = new OpponentAI();
+		opponent = GetNode<OpponentAI>("OpponentAI");
 
 		//Sets up the board. empty spaces are nulls
 		board = new Piece[64];
@@ -217,7 +217,7 @@ public partial class CheckBoard : Sprite2D
 	private void OpponentsTurn() {
 		string moves = "";
 		moves = CheckMoves(opponent.GetRandomPieceIndex());
-		/*
+		
 		while(moves == "") {
 			opponent.GetNextIndex();
 			if(opponent.piecePosition == -1) {
@@ -228,7 +228,7 @@ public partial class CheckBoard : Sprite2D
 				moves = CheckMoves(opponent.piecePosition);
 			}
 		}
-		*/
+		
 		MovePiece(opponent.piecePosition, opponent.GetRandomMove(moves));
 	}
 
