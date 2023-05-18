@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class CheckBoard : Sprite2D
 {
@@ -7,6 +8,7 @@ public partial class CheckBoard : Sprite2D
 	private PackedScene Highlight;
 	private PieceMovements pieceMovements;
 	public Piece[] board {get; set;}
+	public OpponentAI opponent {get; set;}
 	public Node2D[] highlight;
 	public bool isWhitesTurn{get;set;}
 	public bool[] canCastle = {false, false, false, false};
@@ -19,7 +21,8 @@ public partial class CheckBoard : Sprite2D
 		Piece = ResourceLoader.Load<PackedScene>("res://Scenes/piece.tscn");
 		Highlight = ResourceLoader.Load<PackedScene>("res://Scenes/PossibleMoveHighlight.tscn");
 		pieceMovements = GetNode<PieceMovements>("PieceMovements");
-		
+		opponent = new OpponentAI();
+
 		//Sets up the board. empty spaces are nulls
 		board = new Piece[64];
 		highlight = new Node2D[64];
@@ -27,29 +30,12 @@ public partial class CheckBoard : Sprite2D
 			GD.Print(i);
 			board[i] = null;
 			highlight[i] = GenerateHighlight(i);
-		}
+		}		
+
 		/*
 		GD.Print(CreateFenString() + "\n");
 		
 		GD.Print("-" + CheckMoves(8) + "-");
-		MovePiece(8);
-		
-		/*
-		MovePiece(9);
-		MovePiece(17);
-		
-		MovePiece(0);
-		MovePiece(8);
-		
-		MovePiece(1);
-		
-		MovePiece(2);
-		
-		MovePiece(3);
-		
-		MovePiece(4);
-		
-		*/
 	
 		/*
 		fenPosition = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
@@ -123,7 +109,8 @@ public partial class CheckBoard : Sprite2D
 
 		return myPiece;
 	}
-	
+
+	/*
 	//Moves a piece from one position to another
 	public void MovePiece(int index1){
 		string vals = CheckMoves(index1);
@@ -166,6 +153,7 @@ public partial class CheckBoard : Sprite2D
 		}
 	}
 	
+*/
 	public void MovePiece(int index1, int index2){
 		GD.Print("Choices Made: " + index1 + ", " + index2);
 		if(board[index2] == null){
@@ -173,15 +161,22 @@ public partial class CheckBoard : Sprite2D
 			board[index2].index = index2;
 			board[index2].InitializePiece();
 			board[index1] = null;
+			if(board[index2].isWhite == true) {
+				OpponentsTurn();
+			}
 		}else if(board[index1].isWhite != board[index2].isWhite){
 			RemoveChild(board[index2]);
 			board[index2] = board[index1];
 			board[index2].index = index2;
 			board[index2].InitializePiece();
 			board[index1] = null;
+			if(board[index2].isWhite == true) {
+				OpponentsTurn();
+			}
 		}else{
 			GD.Print("Invalid Move!");
 		}
+
 		if(board[index2].name == "pawn" && index2 / 8 >= 7){
 			//FIXME: Allow player to choose which piece they would like to promote to with a small popup menu
 			//For now, it promotes to queen
@@ -194,28 +189,47 @@ public partial class CheckBoard : Sprite2D
 	//Checks the possible moves of a piece on a given coordinate
 	public string CheckMoves(int index){
 		string vals = "";
-
-		GD.Print(board[index].toString());
-		if(board[index].name == "pawn"){
-			vals = pieceMovements.GetPawnMoves(board, index, vals);
-		}
-		else if(board[index].name == "rook"){
-			vals = pieceMovements.GetRookMoves(board, index, vals);
-		}
-		else if(board[index].name == "night"){
-			vals = pieceMovements.GetKnightMoves(board, index, vals);
-		}
-		else if(board[index].name == "bishop"){
-			vals = pieceMovements.GetBishopMoves(board, index, vals);
-		}
-		else if(board[index].name == "queen"){
-			vals = pieceMovements.GetQueenMoves(board, index, vals);
-		}
-		else if(board[index].name == "king"){
-			vals = pieceMovements.GetKingMoves(board, index, vals);
+		if(board[index] != null) {
+			GD.Print(board[index].toString());
+			if(board[index].name == "pawn"){
+				vals = pieceMovements.GetPawnMoves(board, index, vals);
+			}
+			else if(board[index].name == "rook"){
+				vals = pieceMovements.GetRookMoves(board, index, vals);
+			}
+			else if(board[index].name == "night"){
+				vals = pieceMovements.GetKnightMoves(board, index, vals);
+			}
+			else if(board[index].name == "bishop"){
+				vals = pieceMovements.GetBishopMoves(board, index, vals);
+			}
+			else if(board[index].name == "queen"){
+				vals = pieceMovements.GetQueenMoves(board, index, vals);
+			}
+			else if(board[index].name == "king"){
+				vals = pieceMovements.GetKingMoves(board, index, vals);
+			}
 		}
 		
 		return vals;
+	}
+
+	private void OpponentsTurn() {
+		string moves = "";
+		moves = CheckMoves(opponent.GetRandomPieceIndex());
+		/*
+		while(moves == "") {
+			opponent.GetNextIndex();
+			if(opponent.piecePosition == -1) {
+				//Opponent has no viable moves
+				break;
+			}
+			else {
+				moves = CheckMoves(opponent.piecePosition);
+			}
+		}
+		*/
+		MovePiece(opponent.piecePosition, opponent.GetRandomMove(moves));
 	}
 
 	public bool isCheck(int index1, int index2){
