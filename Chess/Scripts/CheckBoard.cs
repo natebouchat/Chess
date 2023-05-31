@@ -147,64 +147,72 @@ public partial class CheckBoard : Sprite2D
 			}
 			else if(board[index].name == "king"){
 				vals = pieceMovements.GetKingMoves(board, index, vals);
+				////////////////// FIX ME //////////////////////////////////////////////////////////////////////////////////////////////////
+				/*
+				if(vals.Length > 0) {
+					vals = RemovePuttingKingInCheck(board[index].isWhite, vals + " ");
+				}
+				*/
 			}
 		}
 		
 		return vals;
 	}
 
-	public bool IsKingInCheck(bool isWhiteTeam) {
-		string kingPos = "";
-		for(int i = 0; i < 64; i++) {
-			if(board[i] != null) {
-				if(board[i].name.Equals("king") && board[i].isWhite == isWhiteTeam) {
-					kingPos = (i.ToString() + " ");
-					break;
-				}
-			}
-		}
-
+	public bool IsKingInCheck(bool isWhiteTeam, string kingPos) {
 		string opponentMoves = "";
+
 		for(int j = 0; j < 64; j++) {
 			if(board[j] != null) {
 				if(board[j].isWhite != isWhiteTeam) {
 					opponentMoves += CheckMoves(j);
-					if(opponentMoves.Length > 0 && opponentMoves[opponentMoves.Length - 1] != ' ') {
-						opponentMoves += " ";
-					}
-
-					if(ContainsKingPosition(opponentMoves, kingPos)) {
-						//GD.Print("//// Opponent Moves: " + opponentMoves + " // King: " + kingPos);
-						return true;
-					}
-					else {
-						opponentMoves = "";
+					if(opponentMoves.Length > 0) {
+						opponentMoves = " " + opponentMoves + " ";
+						if(opponentMoves.Contains(kingPos)) {
+							//GD.Print("//// Opponent Moves: " + opponentMoves + " // King: " + kingPos);
+							return true;
+						}
+						else {
+							opponentMoves = "";
+						}
 					}
 				}
 			}
 		}
 		return false;
 	}
-
-	private bool ContainsKingPosition(string opponentMoves, string kingPos) {
-		for(int i = 0; i < opponentMoves.Length; i++) {
-			for(int j = 0; j < kingPos.Length; j++) {
-				if(opponentMoves[i + j] != kingPos[j]) {
-					break;
+ 
+	private string RemovePuttingKingInCheck(bool isWhiteTeam, string vals) {
+		string finalMoves = "";
+		string possibleKingMove = "";
+		for(int i = 0; i < vals.Length; i++) {
+			if(vals[i] == ' ') {
+				if(!(IsKingInCheck(isWhiteTeam, " " + possibleKingMove.ToString() + " "))) {
+					finalMoves += possibleKingMove + " ";
 				}
-				else if(j == kingPos.Length - 1) {
+				possibleKingMove = "";
+			}
+			else {
+				possibleKingMove += vals[i];
+			}
+		}
+		GD.Print("King Moves: " + finalMoves);
+	
+		return finalMoves;
+		
+	}
 
-					//Final Check, is found kingPos is isolated
-					if(i == 0 || opponentMoves[i - 1] == ' ') {
-						if(i + j == opponentMoves.Length - 1 || opponentMoves[i + j] == ' ') {
-							return true;
-						}
-					}
+	public string GetKingPosition(bool isWhiteTeam) {
+		string kingPos = "";
+		for(int i = 0; i < 64; i++) {
+			if(board[i] != null) {
+				if(board[i].name.Equals("king") && board[i].isWhite == isWhiteTeam) {
+					kingPos = (" " + i.ToString() + " ");
+					break;
 				}
 			}
 		}
-
-		return false;
+		return kingPos;
 	}
 
 	private void OpponentsTurn() {

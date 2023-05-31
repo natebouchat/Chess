@@ -60,7 +60,13 @@ public partial class OpponentAI : Node
 			possibleMoves = new int[temp.Length];
 			movesArraySize = temp.Length;
 			for(int i = 0; i < temp.Length; i++){
-				possibleMoves[i] = Int32.Parse(temp[i]);
+				try {
+					possibleMoves[i] = Int32.Parse(temp[i]);
+				}
+				catch(Exception e) {
+					GD.Print("ERROR in OpponentAI (ParseMovesString()), placing null in array instead");
+					GD.Print(e);
+				}			
 			}
 		}
 		return possibleMoves;

@@ -128,7 +128,13 @@ public partial class BoardCommunication : Node2D
 			possibleMoves = new int[temp.Length];
 			for(int i = 0; i < temp.Length; i++){
 				Console.WriteLine(i + ": " + temp[i]);
-				possibleMoves[i] = Int32.Parse(temp[i]);
+				try {
+					possibleMoves[i] = Int32.Parse(temp[i]);
+				}
+				catch(Exception e) {
+					GD.Print("ERROR in BoardCommunication (DisplayHighlights()), placing null in array instead");
+					GD.Print(e);
+				}
 				checkBoard.highlight[possibleMoves[i]].Visible = true;
 			}
 			return possibleMoves;
@@ -146,10 +152,10 @@ public partial class BoardCommunication : Node2D
 	
 	public void CheckWinConditions() {
 		//Check both team king status
-		if(checkBoard.IsKingInCheck(true)) {
+		if(checkBoard.IsKingInCheck(true, checkBoard.GetKingPosition(true))) {
 			GD.PrintRich("[b]!!! CHECK: White Team !!![/b]");
 		}
-		if(checkBoard.IsKingInCheck(false)) {
+		if(checkBoard.IsKingInCheck(false, checkBoard.GetKingPosition(false))) {
 			GD.PrintRich("[b]!!! CHECK: Black Team !!![/b]");
 		}
 	}
