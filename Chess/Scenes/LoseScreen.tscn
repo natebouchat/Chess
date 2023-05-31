@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmtj4sxtfwv85"]
+
+[ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="1_0kelq"]
+[ext_resource type="Script" path="res://Scripts/LoseScreen.gd" id="1_2oofm"]
+[ext_resource type="Texture2D" uid="uid://dboshe0j8d77e" path="res://Assets/LoseText.png" id="2_n4gkr"]
+
+[sub_resource type="GDScript" id="GDScript_c7b7n"]
+script/source = "extends Sprite2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_2oofm")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(404, 401)
+scale = Vector2(0.856842, 2.33143)
+texture = ExtResource("1_0kelq")
+
+[node name="LoseText" type="Sprite2D" parent="."]
+position = Vector2(411, 262)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_n4gkr")
+script = SubResource("GDScript_c7b7n")
+
+[node name="Menu" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 462.0
+offset_right = 400.0
+offset_bottom = 493.0
+scale = Vector2(2, 2)
+text = "Main Menu"
+
+[node name="PlayAgain" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 354.0
+offset_right = 400.0
+offset_bottom = 385.0
+scale = Vector2(2, 2)
+text = "Play Again
+"
+
+[node name="Quit" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 570.0
+offset_right = 400.0
+offset_bottom = 601.0
+scale = Vector2(2, 2)
+text = "Quit"
+
+[connection signal="pressed" from="Menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="PlayAgain" to="." method="_on_play_again_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
