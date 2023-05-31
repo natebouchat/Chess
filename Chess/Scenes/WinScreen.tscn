@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://csajokx1b1ttp"]
+
+[ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="1_agsx1"]
+[ext_resource type="Script" path="res://Scripts/WinScreen.gd" id="1_ugoij"]
+[ext_resource type="Texture2D" uid="uid://dm72wy5d30yuv" path="res://Assets/WinText.png" id="2_oyrpb"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_ugoij")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(402, 401)
+scale = Vector2(0.856842, 2.32)
+texture = ExtResource("1_agsx1")
+
+[node name="Menu" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 468.0
+offset_right = 400.0
+offset_bottom = 499.0
+scale = Vector2(2, 2)
+text = "Main Menu"
+
+[node name="Play Again" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 354.0
+offset_right = 400.0
+offset_bottom = 385.0
+scale = Vector2(2, 2)
+text = "Play Again"
+
+[node name="Quit" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 570.0
+offset_right = 400.0
+offset_bottom = 601.0
+scale = Vector2(2, 2)
+text = "Quit"
+
+[node name="WinText" type="Sprite2D" parent="."]
+position = Vector2(395, 279)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_oyrpb")
+
+[connection signal="pressed" from="Menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="Play Again" to="." method="_on_play_again_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
