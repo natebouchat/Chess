@@ -27,27 +27,9 @@ public partial class CheckBoard : Sprite2D
 		board = new Piece[64];
 		highlight = new Node2D[64];
 		for(int i = 0; i < 64; i++){
-			GD.Print(i);
 			board[i] = null;
 			highlight[i] = GenerateHighlight(i);
 		}		
-
-		/*
-		GD.Print(CreateFenString() + "\n");
-		
-		GD.Print("-" + CheckMoves(8) + "-");
-	
-		/*
-		fenPosition = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
-		GD.Print(fenPosition);
-		LoadBoard(fenPosition);
-		GD.Print(CreateFenString() + "\n");
-		
-		fenPosition = "pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/ppppppppP/RNBQKBNR b KQkq - 0 1";
-		GD.Print(fenPosition);
-		LoadBoard(fenPosition);
-		GD.Print(CreateFenString() + "\n");
-		*/
 	}
 		
 	private Node2D GenerateHighlight(int index){
@@ -110,50 +92,6 @@ public partial class CheckBoard : Sprite2D
 		return myPiece;
 	}
 
-	/*
-	//Moves a piece from one position to another
-	public void MovePiece(int index1){
-		string vals = CheckMoves(index1);
-		string[] temp;
-		int[] possibleMoves;
-		//GD.Print(vals);
-		if(vals.Length > 0){
-			temp = vals.Split(' ');
-			possibleMoves = new int[temp.Length];
-			
-			Console.WriteLine("Please pick one of the following Possible Moves: ");
-			for(int i = 0; i < temp.Length; i++){
-				Console.WriteLine(i + ": " + temp[i]);
-				possibleMoves[i] = Int32.Parse(temp[i]);
-				highlight[possibleMoves[i]].Visible = true;
-			}
-			
-			string userInput = "0";
-			int userChoice = Int32.Parse(userInput);
-			int index2 = possibleMoves[userChoice];
-			
-			GD.Print("Valid Choice Made " + userChoice + " -" + index2 + "-");
-			if(board[index2] == null){
-				board[index2] = board[index1];
-				board[index2].index = index2;
-				board[index2].InitializePiece();
-				board[index1] = null;
-			}else if(board[index1].isWhite != board[index2].isWhite){
-				RemoveChild(board[index2]);
-				board[index2] = board[index1];
-				board[index2].index = index2;
-				board[index2].InitializePiece();
-				board[index1] = null;
-			}else{
-				GD.Print("Invalid Move!");
-			}
-		}
-		else{
-			GD.Print("No Valid Moves!");	
-		}
-	}
-	
-*/
 	public void MovePiece(int index1, int index2){
 		GD.Print("Choices Made: " + index1 + ", " + index2);
 		if(board[index2] == null){
@@ -177,12 +115,14 @@ public partial class CheckBoard : Sprite2D
 			GD.Print("Invalid Move!");
 		}
 
-		if(board[index2].name == "pawn" && index2 / 8 >= 7){
-			//FIXME: Allow player to choose which piece they would like to promote to with a small popup menu
-			//For now, it promotes to queen
-			board[index2].name = "queen";
-			board[index2].frame -= 4; 
-			board[index2].InitializePiece();
+		if(board[index2] != null) {
+			if(board[index2].name == "pawn" && index2 / 8 >= 7){
+				//FIXME: Allow player to choose which piece they would like to promote to with a small popup menu
+				//For now, it promotes to queen
+				board[index2].name = "queen";
+				board[index2].frame -= 4; 
+				board[index2].InitializePiece();
+			}
 		}
 	}
 	
@@ -190,7 +130,6 @@ public partial class CheckBoard : Sprite2D
 	public string CheckMoves(int index){
 		string vals = "";
 		if(board[index] != null) {
-			GD.Print(board[index].toString());
 			if(board[index].name == "pawn"){
 				vals = pieceMovements.GetPawnMoves(board, index, vals);
 			}
@@ -212,6 +151,60 @@ public partial class CheckBoard : Sprite2D
 		}
 		
 		return vals;
+	}
+
+	public bool IsKingInCheck(bool isWhiteTeam) {
+		string kingPos = "";
+		for(int i = 0; i < 64; i++) {
+			if(board[i] != null) {
+				if(board[i].name.Equals("king") && board[i].isWhite == isWhiteTeam) {
+					kingPos = (i.ToString() + " ");
+					break;
+				}
+			}
+		}
+
+		string opponentMoves = "";
+		for(int j = 0; j < 64; j++) {
+			if(board[j] != null) {
+				if(board[j].isWhite != isWhiteTeam) {
+					opponentMoves += CheckMoves(j);
+					if(opponentMoves.Length > 0 && opponentMoves[opponentMoves.Length - 1] != ' ') {
+						opponentMoves += " ";
+					}
+
+					if(ContainsKingPosition(opponentMoves, kingPos)) {
+						//GD.Print("//// Opponent Moves: " + opponentMoves + " // King: " + kingPos);
+						return true;
+					}
+					else {
+						opponentMoves = "";
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private bool ContainsKingPosition(string opponentMoves, string kingPos) {
+		for(int i = 0; i < opponentMoves.Length; i++) {
+			for(int j = 0; j < kingPos.Length; j++) {
+				if(opponentMoves[i + j] != kingPos[j]) {
+					break;
+				}
+				else if(j == kingPos.Length - 1) {
+
+					//Final Check, is found kingPos is isolated
+					if(i == 0 || opponentMoves[i - 1] == ' ') {
+						if(i + j == opponentMoves.Length - 1 || opponentMoves[i + j] == ' ') {
+							return true;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private void OpponentsTurn() {

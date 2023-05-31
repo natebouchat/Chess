@@ -94,6 +94,7 @@ public partial class BoardCommunication : Node2D
 			checkBoard.MovePiece(lastClickedPosition, position);
 			lastClickedPosition = -1;
 			ClearHighlights();
+			CheckWinConditions();
 		}
 		
 		if(checkBoard.board[position] != null) {
@@ -143,6 +144,14 @@ public partial class BoardCommunication : Node2D
 		}
 	}
 	
-	
+	public void CheckWinConditions() {
+		//Check both team king status
+		if(checkBoard.IsKingInCheck(true)) {
+			GD.PrintRich("[b]!!! CHECK: White Team !!![/b]");
+		}
+		if(checkBoard.IsKingInCheck(false)) {
+			GD.PrintRich("[b]!!! CHECK: Black Team !!![/b]");
+		}
+	}
 
 }
