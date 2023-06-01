@@ -5,6 +5,7 @@ public partial class BoardCommunication : Node2D
 {
 	
 	private CheckBoard checkBoard;
+	private BoardAnimationManager animationManager;
 	private PackedScene BoardButtonScene;
 	private BoardButton[] boardButtons;
 	private string fenPosition;
@@ -14,6 +15,7 @@ public partial class BoardCommunication : Node2D
 	public override void _Ready()
 	{
 		checkBoard = GetNode<CheckBoard>("Board");
+		animationManager = GetNode<BoardAnimationManager>("AnimationPlayer");
 		BoardButtonScene = ResourceLoader.Load<PackedScene>("res://Scenes/BoardButton.tscn");
 		boardButtons = new BoardButton[64];
 		for(int i = 0; i < 64; i++){
@@ -156,22 +158,28 @@ public partial class BoardCommunication : Node2D
 		if(checkBoard.IsKingInCheck(true, kingPos)) {
 			kingPos = kingPos.Substring(1, kingPos.Length - 2);
 			kingMoves = checkBoard.CheckMoves(Int32.Parse(kingPos));
-			GD.Print("King Moves In Check:" + kingMoves + "!!");
 			if(kingMoves.Length == 0) {
-				GD.PrintRich("[b][color=red]!!! CHECKMATE: White Team Has Lost!!![/color][/b]");
+				animationManager.PlayCheckmateTransition(true);
+				//GD.PrintRich("[b][color=red]!!! CHECKMATE: White Team Has Lost!!![/color][/b]");
 			}
-			GD.PrintRich("[b]!!! CHECK: White Team !!![/b]");
+			else {
+				animationManager.PlayInCheckAnimation(true);
+				//GD.PrintRich("[b]!!! CHECK: White Team !!![/b]");
+			}
 		}
 
 		kingPos = checkBoard.GetKingPosition(false);
 		if(checkBoard.IsKingInCheck(false, kingPos)) {
 			kingPos = kingPos.Substring(1, kingPos.Length - 2);
 			kingMoves = checkBoard.CheckMoves(Int32.Parse(kingPos));
-			GD.Print("King Moves In Check:" + kingMoves + "!!");
 			if(kingMoves.Length == 0) {
-				GD.PrintRich("[b][color=green]!!! CHECKMATE: White Team Has Won !!![/color][/b]");
+				animationManager.PlayCheckmateTransition(false);
+				//GD.PrintRich("[b][color=green]!!! CHECKMATE: White Team Has Won !!![/color][/b]");
 			}
-			GD.PrintRich("[b]!!! CHECK: Black Team !!![/b]");
+			else {
+				animationManager.PlayInCheckAnimation(false);
+				//GD.PrintRich("[b]!!! CHECK: Black Team !!![/b]");
+			}
 		}
 	}
 
