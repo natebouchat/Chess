@@ -146,13 +146,11 @@ public partial class CheckBoard : Sprite2D
 				vals = pieceMovements.GetQueenMoves(board, index, vals);
 			}
 			else if(board[index].name == "king"){
-				vals = pieceMovements.GetKingMoves(board, index, vals);
-				////////////////// FIX ME //////////////////////////////////////////////////////////////////////////////////////////////////
-				/*
+				vals = pieceMovements.GetKingMoves(board, index, vals);				
 				if(vals.Length > 0) {
 					vals = RemovePuttingKingInCheck(board[index].isWhite, vals + " ");
 				}
-				*/
+				
 			}
 		}
 		
@@ -163,13 +161,13 @@ public partial class CheckBoard : Sprite2D
 		string opponentMoves = "";
 
 		for(int j = 0; j < 64; j++) {
+			
 			if(board[j] != null) {
-				if(board[j].isWhite != isWhiteTeam) {
+				if(board[j].isWhite != isWhiteTeam && !(board[j].name.Equals("king"))) {
 					opponentMoves += CheckMoves(j);
 					if(opponentMoves.Length > 0) {
 						opponentMoves = " " + opponentMoves + " ";
 						if(opponentMoves.Contains(kingPos)) {
-							//GD.Print("//// Opponent Moves: " + opponentMoves + " // King: " + kingPos);
 							return true;
 						}
 						else {
@@ -178,6 +176,7 @@ public partial class CheckBoard : Sprite2D
 					}
 				}
 			}
+			
 		}
 		return false;
 	}
@@ -187,7 +186,7 @@ public partial class CheckBoard : Sprite2D
 		string possibleKingMove = "";
 		for(int i = 0; i < vals.Length; i++) {
 			if(vals[i] == ' ') {
-				if(!(IsKingInCheck(isWhiteTeam, " " + possibleKingMove.ToString() + " "))) {
+				if(!(IsKingInCheck(isWhiteTeam, " " + possibleKingMove + " "))) {
 					finalMoves += possibleKingMove + " ";
 				}
 				possibleKingMove = "";
@@ -196,10 +195,13 @@ public partial class CheckBoard : Sprite2D
 				possibleKingMove += vals[i];
 			}
 		}
-		GD.Print("King Moves: " + finalMoves);
-	
-		return finalMoves;
+
+		if(finalMoves.Length > 0){
+			finalMoves = finalMoves.Substring(0, finalMoves.Length - 1);
+		}
 		
+		return finalMoves;
+
 	}
 
 	public string GetKingPosition(bool isWhiteTeam) {

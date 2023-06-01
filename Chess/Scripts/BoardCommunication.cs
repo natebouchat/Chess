@@ -23,7 +23,6 @@ public partial class BoardCommunication : Node2D
 		fenPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		GD.Print(fenPosition);
 		LoadBoard(fenPosition);
-
 	}
 
 	private void LoadBoard(string fenData){
@@ -152,10 +151,26 @@ public partial class BoardCommunication : Node2D
 	
 	public void CheckWinConditions() {
 		//Check both team king status
-		if(checkBoard.IsKingInCheck(true, checkBoard.GetKingPosition(true))) {
+		string kingPos = checkBoard.GetKingPosition(true);
+		string kingMoves = "";
+		if(checkBoard.IsKingInCheck(true, kingPos)) {
+			kingPos = kingPos.Substring(1, kingPos.Length - 2);
+			kingMoves = checkBoard.CheckMoves(Int32.Parse(kingPos));
+			GD.Print("King Moves In Check:" + kingMoves + "!!");
+			if(kingMoves.Length == 0) {
+				GD.PrintRich("[b][color=red]!!! CHECKMATE: White Team Has Lost!!![/color][/b]");
+			}
 			GD.PrintRich("[b]!!! CHECK: White Team !!![/b]");
 		}
-		if(checkBoard.IsKingInCheck(false, checkBoard.GetKingPosition(false))) {
+
+		kingPos = checkBoard.GetKingPosition(false);
+		if(checkBoard.IsKingInCheck(false, kingPos)) {
+			kingPos = kingPos.Substring(1, kingPos.Length - 2);
+			kingMoves = checkBoard.CheckMoves(Int32.Parse(kingPos));
+			GD.Print("King Moves In Check:" + kingMoves + "!!");
+			if(kingMoves.Length == 0) {
+				GD.PrintRich("[b][color=green]!!! CHECKMATE: White Team Has Won !!![/color][/b]");
+			}
 			GD.PrintRich("[b]!!! CHECK: Black Team !!![/b]");
 		}
 	}
