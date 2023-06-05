@@ -23,13 +23,20 @@ offset_left = 79.0
 offset_top = 179.0
 offset_right = 334.0
 offset_bottom = 217.0
-text = "Play"
+text = "Play vs AI"
 
-[node name="Quit" type="Button" parent="."]
+[node name="Multiplayer" type="Button" parent="."]
 offset_left = 79.0
 offset_top = 267.0
 offset_right = 334.0
 offset_bottom = 305.0
+text = "Multiplayer"
+
+[node name="Quit" type="Button" parent="."]
+offset_left = 79.0
+offset_top = 355.0
+offset_right = 334.0
+offset_bottom = 393.0
 text = "Quit"
 
 [node name="Clipart" type="Sprite2D" parent="."]
@@ -38,4 +45,5 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_8po2p")
 
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]

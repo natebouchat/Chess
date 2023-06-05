@@ -116,7 +116,7 @@ public partial class CheckBoard : Sprite2D
 		}
 
 		if(board[index2] != null) {
-			if(board[index2].name == "pawn" && index2 / 8 >= 7){
+			if(board[index2].name == "pawn" && index2 <= 7){
 				//FIXME: Allow player to choose which piece they would like to promote to with a small popup menu
 				//For now, it promotes to queen
 				board[index2].name = "queen";
