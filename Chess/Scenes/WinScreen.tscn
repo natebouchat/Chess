@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://csajokx1b1ttp"]
+[gd_scene load_steps=4 format=3 uid="uid://bajb7cl8efvm1"]
 
+[ext_resource type="Script" path="res://Scripts/WinScreen.cs" id="1_036jf"]
 [ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="1_agsx1"]
-[ext_resource type="Script" path="res://Scripts/WinScreen.gd" id="1_ugoij"]
 [ext_resource type="Texture2D" uid="uid://dm72wy5d30yuv" path="res://Assets/WinText.png" id="2_oyrpb"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_ugoij")
+script = ExtResource("1_036jf")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(402, 401)

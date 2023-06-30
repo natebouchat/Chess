@@ -1,12 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://diywh6roo1a2k"]
+[gd_scene load_steps=5 format=3 uid="uid://ddt45xpp7t1iq"]
 
+[ext_resource type="Script" path="res://Scripts/menu.cs" id="1_h5gw4"]
 [ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="1_lu26g"]
-[ext_resource type="Script" path="res://Scripts/menu.gd" id="1_thufa"]
 [ext_resource type="Texture2D" uid="uid://tgxaoirrshkx" path="res://Assets/MenuTitle.png" id="2_6oiy1"]
 [ext_resource type="Texture2D" uid="uid://b7312ioupke4s" path="res://Assets/ChessClipart.png" id="3_8po2p"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_thufa")
+script = ExtResource("1_h5gw4")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(401.5, 400.5)

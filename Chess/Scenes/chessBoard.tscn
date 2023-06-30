@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bmbxqwsqyxrf8"]
+[gd_scene load_steps=13 format=3 uid="uid://cginakmoy83no"]
 
 [ext_resource type="Script" path="res://Scripts/BoardCommunication.cs" id="1_3atx4"]
 [ext_resource type="Texture2D" uid="uid://05thegyauc6e" path="res://Assets/CheckBoard.jpg" id="1_qmxx6"]
@@ -7,8 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://cxljdk3u4s6hg" path="res://Assets/red.jpg" id="3_ttwto"]
 [ext_resource type="Script" path="res://Scripts/OpponentAI.cs" id="4_1eoly"]
 [ext_resource type="Script" path="res://Scripts/PieceMovements.cs" id="4_acn5x"]
-[ext_resource type="Script" path="res://Scripts/Overlay.gd" id="6_kjthu"]
 [ext_resource type="Texture2D" uid="uid://dvntaawha1amv" path="res://Assets/PauseMenu.png" id="7_127h2"]
+[ext_resource type="Script" path="res://Scripts/Overlay.cs" id="8_3ga32"]
 
 [sub_resource type="Animation" id="Animation_lwq6r"]
 resource_name = "CheckmateTransition"
@@ -113,7 +113,7 @@ offset_top = 346.0
 offset_right = 1243.0
 offset_bottom = 1148.0
 color = Color(0, 0, 0, 0)
-script = ExtResource("6_kjthu")
+script = ExtResource("8_3ga32")
 
 [node name="PausedScreen" type="Sprite2D" parent="Overlay"]
 position = Vector2(-38, 71)
