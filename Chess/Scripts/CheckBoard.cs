@@ -38,7 +38,7 @@ public partial class CheckBoard : Sprite2D
 		AddChild(myHighlight);
 		myHighlight.Visible = false;
 
-		int xPos = ((index % 8) * 98) + 57;
+		int xPos = (index % 8 * 98) + 57;
 		int yPos = (((int)Math.Floor((double)index / 8)) * 98) + 55;
 
 		myHighlight.Position = new Vector2(xPos, yPos);
@@ -194,7 +194,7 @@ public partial class CheckBoard : Sprite2D
 		{
 			if (board[j] != null)
 			{
-				if (board[j].isWhite != isWhiteTeam && !(board[j].name.Equals("king")))
+				if (board[j].isWhite != isWhiteTeam && !board[j].name.Equals("king"))
 				{
 					opponentMoves += CheckMoves(j);
 					if (opponentMoves.Length > 0)
@@ -223,7 +223,7 @@ public partial class CheckBoard : Sprite2D
 		{
 			if (vals[i] == ' ')
 			{
-				if (!(IsKingInCheck(isWhiteTeam, " " + possibleKingMove + " ")))
+				if (!IsKingInCheck(isWhiteTeam, " " + possibleKingMove + " "))
 				{
 					finalMoves += possibleKingMove + " ";
 				}
@@ -252,7 +252,7 @@ public partial class CheckBoard : Sprite2D
 			{
 				if (board[i].name.Equals("king") && board[i].isWhite == isWhiteTeam)
 				{
-					kingPos = (" " + i.ToString() + " ");
+					kingPos = " " + i.ToString() + " ";
 					break;
 				}
 			}

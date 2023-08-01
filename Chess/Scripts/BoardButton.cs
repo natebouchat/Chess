@@ -34,6 +34,6 @@ public partial class BoardButton : Button
 	public void InitializeBoardButton(int position)
 	{
 		boardPos = position;
-		this.Position = new Vector2(((position % 8) * 98) + 7, (int)(((Math.Floor(((float)(position)) / 8.0)) * 98)) + 7);
+		this.Position = new Vector2((position % 8 * 98) + 7, (int)(Math.Floor(((float)position) / 8.0) * 98) + 7);
 	}
 }

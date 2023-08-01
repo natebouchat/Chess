@@ -25,7 +25,7 @@ public partial class Piece : Node2D
 		//Each board square has a side length of 98 pixels currently, and the border is 9 pixels.
 		//Coords are the array value, so to offset the piece sprites to the correct position on the board,
 
-		int xPos = ((index % 8) * 98) - 397;
+		int xPos = (index % 8 * 98) - 397;
 		int yPos = (((int)Math.Floor((double)index / 8)) * 98) - 400;
 
 		this.Position = new Vector2(xPos, yPos);
