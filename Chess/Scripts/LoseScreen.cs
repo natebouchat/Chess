@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class LoseScreen : Node2D
 {
@@ -12,20 +11,19 @@ public partial class LoseScreen : Node2D
 	public override void _Process(double delta)
 	{
 	}
-	
+
 	public void _on_menu_pressed()
 	{
-	GetTree().ChangeSceneToFile("res://Scenes/menu.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/menu.tscn");
 	}
 
 	public void _on_play_again_pressed()
 	{
-	GetTree().ChangeSceneToFile("res://Scenes/chessBoard.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/chessBoard.tscn");
 	}
 
 	public void _on_quit_pressed()
 	{
-	GetTree().Quit();
+		GetTree().Quit();
 	}
-
 }

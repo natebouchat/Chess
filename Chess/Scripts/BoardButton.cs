@@ -3,7 +3,7 @@ using System;
 
 public partial class BoardButton : Button
 {
-	public int boardPos {get; set;}
+	public int boardPos { get; set; }
 	private bool buttonHeld;
 	private BoardCommunication board;
 
@@ -17,19 +17,23 @@ public partial class BoardButton : Button
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if(ButtonPressed == true) {
-			if(buttonHeld == false) {
+		if (ButtonPressed == true)
+		{
+			if (buttonHeld == false)
+			{
 				buttonHeld = true;
 				board.ButtonWasClicked(boardPos);
 			}
 		}
-		else {
+		else
+		{
 			buttonHeld = false;
 		}
 	}
 
-	public void InitializeBoardButton(int position) {
+	public void InitializeBoardButton(int position)
+	{
 		boardPos = position;
-		this.Position = new Vector2(((position % 8) * 98) + 7, (int)(((Math.Floor(((float)(position))/8.0)) * 98)) + 7);
+		this.Position = new Vector2(((position % 8) * 98) + 7, (int)(((Math.Floor(((float)(position)) / 8.0)) * 98)) + 7);
 	}
 }
