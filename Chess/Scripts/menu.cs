@@ -12,18 +12,11 @@ public partial class menu : Node2D
 	{
 	}
 
-	public void _on_play_pressed()
-	{
+	public void _on_play_pressed() => 
 		GetTree().ChangeSceneToFile("res://Scenes/chessBoard.tscn");
-	}
 
-	private void _on_multiplayer_pressed()
-	{
+	private void _on_multiplayer_pressed() => 
 		GetTree().ChangeSceneToFile("res://Scenes/chessBoard.tscn");
-	}
 
-	private void _on_quit_pressed()
-	{
-		GetTree().Quit();
-	}
+	private void _on_quit_pressed() => GetTree().Quit();
 }

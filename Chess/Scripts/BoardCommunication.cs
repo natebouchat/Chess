@@ -29,7 +29,7 @@ public partial class BoardCommunication : Node2D
 	private void LoadBoard(string fenData)
 	{
 		string data = fenData.Substring(0, fenData.IndexOf(' '));
-		int i = 0;
+		int i;
 
 		for (i = 0; i < 64; i++)
 		{
@@ -186,7 +186,7 @@ public partial class BoardCommunication : Node2D
 	{
 		//Check both team king status
 		string kingPos = checkBoard.GetKingPosition(true);
-		string kingMoves = "";
+		string kingMoves;
 		if (checkBoard.IsKingInCheck(true, kingPos))
 		{
 			kingPos = kingPos.Substring(1, kingPos.Length - 2);
